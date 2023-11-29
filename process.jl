@@ -92,7 +92,16 @@ open(ARGS[1], enc"WINDOWS-1250") do io
     # Plots
     
     p = plot(datetimes, filtered_data["CPU (Tctl/Tdie) [°C]"], label="Die temp", color=:blue)
-    display(p)
+    hline!(p, [mean_data["CPU (Tctl/Tdie) [°C]"]], label="Die temp mean", color=:blue, linestyle=:dot)
+
+    p_c = plot(datetimes, filtered_data["Takt jader (avg) [MHz]"], label="Clock", color=:orange)
+    hline!(p_c, [mean_data["Takt jader (avg) [MHz]"]], label="Clock mean", color=:orange, linestyle=:dot)
+
+    p_f = plot(datetimes, filtered_data["CPU [RPM]"], label="Fan RPM", color=:red)
+    hline!(p_f, [mean_data["CPU [RPM]"]], label="Fan RPM mean", color=:red, linestyle=:dot)
+
+    combined_plot = plot(p, p_c, p_f, layout=(3,1), size=(1000, 500))
+    display(combined_plot)
 
     readline()
 end
