@@ -74,14 +74,25 @@ open(ARGS[1], enc"WINDOWS-1250") do io
 #    for i in 1:length(filtered_time)
 #        println("$(datetimes[i]) - $(filtered_power[i]) - Time Diff: $(time_diffs[i]) - $(filtered_memory[i])")
 #    end
+
+    # Mean calculation
+    mean_data = Dict{String, Float64}()
+    for (col_name, col_type) in columns_info
+        if col_type in [Float64, Int32]
+            mean_data[col_name] = mean(filtered_data[col_name])
+        end
+    end
     
     print("Start time: $(datetimes[1])\nEnd time: $(last(datetimes))\n")
-    @printf "Average FAN CPU RPM: %0.2f\n" mean(filtered_data["CPU [RPM]"])
-    @printf "Average clock: %0.2f\n" mean(filtered_data["Takt jader (avg) [MHz]"])
-    @printf "Average Tctl/Tdie: %0.2f\n" mean(filtered_data["CPU (Tctl/Tdie) [°C]"])
-    @printf "Average Tcase: %0.2f\n" mean(filtered_data["Pouzdro CPU (průměr) [°C]"])
+    @printf "Average FAN CPU RPM: %0.2f\n" mean_data["CPU [RPM]"]
+    @printf "Average clock: %0.2f\n" mean_data["Takt jader (avg) [MHz]"]
+    @printf "Average Tctl/Tdie: %0.2f\n" mean_data["CPU (Tctl/Tdie) [°C]"]
+    @printf "Average Tcase: %0.2f\n" mean_data["Pouzdro CPU (průměr) [°C]"]
 
     # Plots
     
-    #p = plot(datetimes, filtered_data[
+    p = plot(datetimes, filtered_data["CPU (Tctl/Tdie) [°C]"], label="Die temp", color=:blue)
+    display(p)
+
+    readline()
 end
