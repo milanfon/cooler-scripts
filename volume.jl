@@ -9,12 +9,11 @@ end
 function plot_cube!(plt, origin, cube::Cube)
     A, B, C = cube.dims
     x0, y0, z0 = origin
-    # Define vertices
+
     vertices = [
         (x0, y0, z0), (x0 + A, y0, z0), (x0 + A, y0 + B, z0), (x0, y0 + B, z0), # Bottom vertices
         (x0, y0, z0 + C), (x0 + A, y0, z0 + C), (x0 + A, y0 + B, z0 + C), (x0, y0 + B, z0 + C)  # Top vertices
     ]
-    # Define edges
     edges = [
         (1, 2), (2, 3), (3, 4), (4, 1),
         (5, 6), (6, 7), (7, 8), (8, 5),
@@ -23,15 +22,13 @@ function plot_cube!(plt, origin, cube::Cube)
     
     added_label = false
 
-    # Plot each edge
     for edge in edges
-        # Add the label only for the first edge
         if !added_label
             plot!(plt, [vertices[edge[1]][1], vertices[edge[2]][1]], 
                        [vertices[edge[1]][2], vertices[edge[2]][2]], 
                        [vertices[edge[1]][3], vertices[edge[2]][3]], 
                        color=cube.color, label=cube.name)
-            added_label = true  # Set to true after adding label
+            added_label = true
         else
             plot!(plt, [vertices[edge[1]][1], vertices[edge[2]][1]], 
                        [vertices[edge[1]][2], vertices[edge[2]][2]], 
@@ -44,9 +41,8 @@ end
 function plot_cubes(cubes::Vector{Cube})
     plt = plot(legend=:outertopright)
 
-    # Iterate through the list of cubes and plot each one
     for cube in cubes
-        plot_cube!(plt, (0, 0, 0), cube)
+        plot_cube!(plt, (0, 0, 0), cube) # Render every cube at 0 origin
     end
 
     display(plt)
