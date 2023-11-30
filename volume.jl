@@ -24,17 +24,15 @@ function plot_cube!(plt, origin, cube::Cube)
 
     for edge in edges
         if !added_label
-            plot!(plt, [vertices[edge[1]][1], vertices[edge[2]][1]], 
-                       [vertices[edge[1]][2], vertices[edge[2]][2]], 
-                       [vertices[edge[1]][3], vertices[edge[2]][3]], 
-                       color=cube.color, label=cube.name)
+            label = cube.name
             added_label = true
         else
-            plot!(plt, [vertices[edge[1]][1], vertices[edge[2]][1]], 
-                       [vertices[edge[1]][2], vertices[edge[2]][2]], 
-                       [vertices[edge[1]][3], vertices[edge[2]][3]], 
-                       color=cube.color, label="")
+            label = ""
         end
+        plot!(plt, [vertices[edge[1]][1], vertices[edge[2]][1]], 
+                   [vertices[edge[1]][2], vertices[edge[2]][2]], 
+                   [vertices[edge[1]][3], vertices[edge[2]][3]], 
+                   color=cube.color, label=label)
     end
 end
 
