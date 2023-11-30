@@ -57,6 +57,8 @@ function calculate_time_differences(datetimes::Vector{DateTime})
     return time_diffs
 end
 
+println("Loading file...")
+
 open(ARGS[1], enc"WINDOWS-1250") do io
     df = CSV.File(io, select=collect(keys(columns_info))) |> DataFrame
 #    first_col_name = names(df)[2]
@@ -70,6 +72,9 @@ open(ARGS[1], enc"WINDOWS-1250") do io
     datetimes = [DateTime(dt_str, datetime_format) for dt_str in datetime_strings[1:end-2]]
     
     time_diffs = calculate_time_differences(datetimes)
+
+    print("Enter ambient temperature: ")
+    ambient_temp = parse(Float64, readline())
     
 #    for i in 1:length(filtered_time)
 #        println("$(datetimes[i]) - $(filtered_power[i]) - Time Diff: $(time_diffs[i]) - $(filtered_memory[i])")
@@ -86,18 +91,18 @@ open(ARGS[1], enc"WINDOWS-1250") do io
     print("Start time: $(datetimes[1])\nEnd time: $(last(datetimes))\n")
     @printf "Average FAN CPU RPM: %0.2f\n" mean_data["CPU [RPM]"]
     @printf "Average clock: %0.2f\n" mean_data["Takt jader (avg) [MHz]"]
-    @printf "Average Tctl/Tdie: %0.2f\n" mean_data["CPU (Tctl/Tdie) [°C]"]
-    @printf "Average Tcase: %0.2f\n" mean_data["Pouzdro CPU (průměr) [°C]"]
+    @printf "Average Tctl/Tdie: %0.2f\n" mean_data["CPU (Tctl/Tdie) [°C]"] - ambient_temp
+    @printf "Average Tcase: %0.2f\n" mean_data["Pouzdro CPU (průměr) [°C]"] - ambient_temp
 
     # Plots
     
-    p = plot(datetimes, filtered_data["CPU (Tctl/Tdie) [°C]"], label="Die temp", color=:blue)
-    hline!(p, [mean_data["CPU (Tctl/Tdie) [°C]"]], label="Die temp mean", color=:blue, linestyle=:dot)
+    p = plot(datetimes, filtered_data["CPU (Tctl/Tdie) [°C]"] .- ambient_temp, label="Die temp", color=:blue,  ylims=(0, maximum(filtered_data["CPU (Tctl/Tdie) [°C]"])))
+    hline!(p, [mean_data["CPU (Tctl/Tdie) [°C]"] .- ambient_temp], label="Die temp mean", color=:blue, linestyle=:dot)
 
-    p_c = plot(datetimes, filtered_data["Takt jader (avg) [MHz]"], label="Clock", color=:orange)
+    p_c = plot(datetimes, filtered_data["Takt jader (avg) [MHz]"], label="Clock", color=:orange,  ylims=(0, maximum(filtered_data["Takt jader (avg) [MHz]"])))
     hline!(p_c, [mean_data["Takt jader (avg) [MHz]"]], label="Clock mean", color=:orange, linestyle=:dot)
 
-    p_f = plot(datetimes, filtered_data["CPU [RPM]"], label="Fan RPM", color=:red)
+    p_f = plot(datetimes, filtered_data["CPU [RPM]"], label="Fan RPM", color=:red, ylims=(0, maximum(filtered_data["CPU [RPM]"])))
     hline!(p_f, [mean_data["CPU [RPM]"]], label="Fan RPM mean", color=:red, linestyle=:dot)
 
     combined_plot = plot(p, p_c, p_f, layout=(3,1), size=(1000, 500))
