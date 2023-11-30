@@ -47,11 +47,11 @@ end
 function calculate_time_differences(datetimes::Vector{DateTime})
     n = length(datetimes)
     time_diffs = zeros(Float64, n)
-    time_diffs[1] = 0.0  # First element will have time diff as zero
+    time_diffs[1] = 0.0  
 
     for i in 2:n
         diff = datetimes[i] - datetimes[i-1]
-        time_diffs[i] = (Dates.value(diff) / 1000.0)  # Convert to seconds
+        time_diffs[i] = (Dates.value(diff) / 1000.0)  
     end
 
     return time_diffs
