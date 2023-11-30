@@ -1,5 +1,9 @@
 using Plots
 
+const EXPORT_PLOT = true
+const EXPORT_DPI = 600
+const EXPORT_RES = (3840, 2160)
+
 struct Cube
     dims::Tuple{Float64, Float64, Float64} # LxWxH
     color::Symbol
@@ -37,13 +41,18 @@ function plot_cube!(plt, origin, cube::Cube)
 end
 
 function plot_cubes(cubes::Vector{Cube})
-    plt = plot(legend=:outertopright)
+    plt = plot(legend=:outertopright, dpi=EXPORT_DPI, bg=:transparent)
 
     for cube in cubes
         plot_cube!(plt, (0, 0, 0), cube) # Render every cube at 0 origin
     end
 
     display(plt)
+    readline()
+
+    if EXPORT_PLOT
+        savefig(plt, "volume.png")
+    end
 end
 
 cubes = [
@@ -52,4 +61,3 @@ cubes = [
 ]
 
 plot_cubes(cubes)
-readline()
