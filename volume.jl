@@ -1,7 +1,7 @@
 using Plots
 
 struct Cube
-    dims::Tuple{Float64, Float64, Float64}
+    dims::Tuple{Float64, Float64, Float64} # LxWxH
     color::Symbol
     name::String
 end
@@ -47,8 +47,8 @@ function plot_cubes(cubes::Vector{Cube})
 end
 
 cubes = [
-    Cube((145, 136, 168), :red, "Dark Rock Pro 5"),
-    Cube((161, 150, 165), :blue, "NH-D15"),
+    Cube((145, 136, 175), :orange, "Dark Rock Pro 5 (Naměřeno)"),
+    Cube((161, 150, 195), :brown, "NH-D15 (Naměřeno)"),
 ]
 
 plot_cubes(cubes)
